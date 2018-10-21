@@ -1,12 +1,6 @@
 import clang.cindex as cc
 
-def foo(cursor):
-    if cursor.kind.is_declaration():
-        print 'Found %s [line=%s, col=%s]' % (cursor.spelling, cursor.location.line, cursor.location.column)
-    for c in cursor.get_children():
-        foo(c)
-
 index = cc.Index.create()
-tu = index.parse('test.c')
-print 'Translation unit:', tu.spelling
-foo(tu.cursor)
+tu = index.parse('test.c', options=cc.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
+for token in tu.cursor.get_tokens():
+    print token.kind, token.cursor.kind, token.spelling, token.location.line, token.location.column
